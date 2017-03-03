@@ -8,7 +8,6 @@ const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  setInterval(monitorUrl, 1000);
   res.render('index', { title: 'Express' });
 });
 
@@ -26,7 +25,7 @@ router.post('/add', function(req, res, next) {
     }
 
     // Query to insert
-    client.query('INSERT INTO identity(id, url) values($1, $2)',
+    const query = client.query('INSERT INTO identity(id, url) values($1, $2)',
       [data.id, data.url]);
 
     results.push(data.id);
@@ -41,10 +40,6 @@ router.post('/add', function(req, res, next) {
 router.get('/response', function(req, res, next) {
   const results = [];
 });
-
-function monitorUrl() {
-  console.log(url);
-};
 
 
 module.exports = router;
