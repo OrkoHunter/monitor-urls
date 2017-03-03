@@ -28,6 +28,9 @@ router.post('/add', function(req, res, next) {
     const query = client.query('INSERT INTO identity(id, url) values($1, $2)',
       [data.id, data.url]);
 
+    const query2 = client.query('INSERT INTO responses(id, delays) values($1, $2)',
+      [data.id, '']);
+
     results.push(data.id);
 
     query.on('end', function() {
@@ -37,8 +40,79 @@ router.post('/add', function(req, res, next) {
   });
 });
 
-router.get('/response', function(req, res, next) {
-  const results = [];
+router.post('/response', function(req, res, next) {
+  url_id = req.body.id;
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.log(err);
+      return res.status(500)
+        .json({success: false, data: err});
+    }
+
+    // Query to select
+    const query = client.query('SELECT * FROM responses WHERE id=$1;',
+      [url_id]);
+
+    query.on('row', function() {
+      results = row.delays.split(' ');
+      return res.status(200)
+        .json(results);
+    });
+  });
+
+});
+
+router.post('/edit', function(req, res, next) {
+  url_id = req.body.id;
+  new_url = req.body.url;
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.log(err);
+      return res.status(500)
+        .json({success: false, data: err});
+    }
+
+    // Query to update
+    const query = client.query('UPDATE identity SET url = $2 WHERE id=$1;',
+      [url_id, new_url]);
+
+    query.on('end', function() {
+      done();
+      return res.status(200)
+        .json({success: true});
+    });
+  });
+});
+
+
+router.post('/stop', function(req, res, next) {
+  url_id = req.body.id;
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.log(err);
+      return res.status(500)
+        .json({success: false, data: err});
+    }
+
+    // Query to delete
+    const query1 = client.query('DELETE FROM identity WHERE id = $1',
+      [url_id]);
+
+    const query2 = client.query('DELETE FROM responses WHERE id = $1',
+      [url_id]);
+
+    query2.on('end', function() {
+      done();
+      return res.status(200)
+        .json({success: true});
+    });
+  });
 });
 
 
