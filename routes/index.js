@@ -40,7 +40,7 @@ router.post('/add', function(req, res, next) {
   });
 });
 
-router.post('/response', function(req, res, next) {
+router.post('/responses', function(req, res, next) {
   url_id = req.body.id;
 
   pg.connect(connectionString, function(err, client, done) {
@@ -55,7 +55,7 @@ router.post('/response', function(req, res, next) {
     const query = client.query('SELECT * FROM responses WHERE id=$1;',
       [url_id]);
 
-    query.on('row', function() {
+    query.on('row', function(row) {
       results = row.delays.split(' ');
       return res.status(200)
         .json(results);
