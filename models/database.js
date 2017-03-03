@@ -6,5 +6,5 @@ client.connect();
 const query = client.query(
   'CREATE TABLE identity(id char (128) PRIMARY KEY, url text NOT NULL)');
 const query = client.query(
-  'CREATE TABLE identity(id char (128) PRIMARY KEY, delays text)');
+  'CREATE TABLE responses(id char (128) PRIMARY KEY, delays text)');
 query.on('end', () => { client.end(); });
