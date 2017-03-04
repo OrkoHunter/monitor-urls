@@ -36,7 +36,6 @@ var insertDelyas = function(url_id, delay) {
       console.log(err);
       return;
     }
-    console.log('Inserting delays for', url_id);
     var delays_string = '';
     const query1 = client.query("SELECT * FROM responses WHERE id=$1;",
       [url_id]);
