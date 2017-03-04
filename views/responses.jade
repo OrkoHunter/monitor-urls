@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  p Last 100 response times for id #{data.id}
+  ul
+    each res in data.responses
+      li= res + " ms"

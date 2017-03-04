@@ -8,7 +8,63 @@ const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.log(err);
+      return res.status(500)
+        .json({success: false, data: err});
+    }
+
+    var data = {};
+    data["no_of_urls"] = 0;
+    data["urls"] = [];
+
+    // Query to insert
+    const query = client.query('SELECT * FROM identity');
+
+    query.on('row', function(row) {
+      ++data["no_of_urls"];
+      data["urls"].push({id: row.id, url: row.url});
+    });
+
+    query.on('end', function() {
+      done();
+      res.render('index', { data: data });
+    });
+  });
+
+});
+
+router.get('/:id', function(req, res, next) {
+
+  pg.connect(connectionString, function(err, client, done) {
+    if (err) {
+      done();
+      console.log(err);
+      return res.status(500)
+        .json({success: false, data: err});
+    }
+
+    var data = {};
+    data['id'] = req.params.id;
+    // Query to insert
+    const query = client.query('SELECT * FROM responses WHERE id=$1',
+      [req.params.id]);
+
+    query.on('row', function(row) {
+      data["responses"] = row.delays.split(' ');
+      console.log(data);
+    });
+
+    query.on('end', function() {
+      done();
+      res.render('responses', { data: data });
+    });
+  });
+
+
 });
 
 router.post('/add', function(req, res, next) {

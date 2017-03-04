@@ -1,5 +1,9 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Welcome
+  p #{data.no_of_urls} URLs being monitored for their response times
+  ul List of URLs
+    each url in data.urls
+      li
+        a(href=url.id) #{url.url}
