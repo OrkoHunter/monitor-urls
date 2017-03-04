@@ -7,6 +7,7 @@ function monitorUrls() {
     if (err) {
       done();
       console.log(err);
+      return;
     }
 
     // Query to get
@@ -33,6 +34,7 @@ var insertDelyas = function(url_id, delay) {
     if (err) {
       done();
       console.log(err);
+      return;
     }
     console.log('Inserting delays for', url_id);
     var delays_string = '';
