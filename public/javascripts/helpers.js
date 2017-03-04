@@ -49,7 +49,15 @@ var insertDelyas = function(url_id, delay) {
 
       const query2 = client.query('UPDATE responses SET delays = $2 WHERE id = $1',
         [url_id, updated_string]);
+
+      query2.on('end', function() {
+        done();
+      });
     });
+
+    query1.on('end', function() {
+      done();
+    })
   });
 };
 

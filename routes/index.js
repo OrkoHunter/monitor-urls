@@ -60,6 +60,10 @@ router.post('/responses', function(req, res, next) {
       return res.status(200)
         .json(results);
     });
+
+    query.on('end', function(row) {
+      done();
+    });
   });
 
 });
